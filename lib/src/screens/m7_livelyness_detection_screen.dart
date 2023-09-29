@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:ui' as ui;
 
 import 'package:collection/collection.dart';
@@ -44,9 +45,15 @@ class _MLivelyness7DetectionScreenState
   void initState() {
     _preInitCallBack();
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _postFrameCallBack(),
     );
+    runningCamera();
+    //  WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _postFrameCallBack();
+    //   startCamera();
+    // });
   }
 
   @override
@@ -64,6 +71,11 @@ class _MLivelyness7DetectionScreenState
         child: _buildBody(),
       ),
     );
+  }
+
+  void runningCamera() async {
+    await Future.delayed(const Duration(seconds: 3));
+    startCamera();
   }
 
   //* MARK: - Private Methods for Business Logic
@@ -116,6 +128,7 @@ class _MLivelyness7DetectionScreenState
   }
 
   void _startLiveFeed() async {
+    log("Mulai:::::::::::::::::::::::::6");
     final camera = availableCams[_cameraIndex];
     // _cameraController = CameraController(
     //   camera,
@@ -133,18 +146,27 @@ class _MLivelyness7DetectionScreenState
     //     setState(() {});
     //   }
     // });
+    log("Mulai:::::::::::::::::::::::::7");
     _cameraController = CameraController(
       camera,
       ResolutionPreset.high,
       enableAudio: false,
     );
+    log("Mulai:::::::::::::::::::::::::8");
     _cameraController?.initialize().then((_) {
+      log("Mulai:::::::::::::::::::::::::9");
       if (!mounted) {
+        log("Mulai:::::::::::::::::::::::::10");
         return;
       }
+      log("Mulai:::::::::::::::::::::::::11");
       _startTimer();
       _cameraController?.startImageStream(_processCameraImage);
-      setState(() {});
+      setState(() {
+        log("Mulai:::::::::::::::::::::::::12");
+      });
+
+      log("Mulai:::::::::::::::::::::::::13");
     });
   }
 
@@ -295,6 +317,16 @@ class _MLivelyness7DetectionScreenState
     XFile? imgToReturn,
   }) {
     final String? imgPath = imgToReturn?.path;
+    // setState(
+    //   () => _isInfoStepCompleted = false,
+    // );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => M7LivelynessDetectionScreen(
+    //             config: widget.config,
+    //           )),
+    // );
     Navigator.of(context).pop(imgPath);
   }
 
@@ -396,23 +428,57 @@ class _MLivelyness7DetectionScreenState
     }
   }
 
+  void startCamera() {
+    if (mounted) {
+      setState(
+        () => _isInfoStepCompleted = true,
+      );
+    }
+    _startLiveFeed();
+  }
+
   //* MARK: - Private Methods for UI Components
   //? =========================================================
   Widget _buildBody() {
     return Stack(
       children: [
-        _isInfoStepCompleted
-            ? _buildDetectionBody()
-            : M7LivelynessInfoWidget(
-                onStartTap: () {
-                  if (mounted) {
-                    setState(
-                      () => _isInfoStepCompleted = true,
-                    );
-                  }
-                  _startLiveFeed();
-                },
-              ),
+        if (_isInfoStepCompleted) _buildDetectionBody(),
+        // _isInfoStepCompleted
+        //     ? _buildDetectionBody()
+        //     : Align(
+        //         alignment: Alignment.center,
+        //         child: ElevatedButton(
+        //           style: ElevatedButton.styleFrom(
+        //             backgroundColor: Colors.blueGrey,
+        //           ),
+        //           onPressed: () {
+        //             log("Mulai:::::::::::::::::::::::::1");
+        //             if (mounted) {
+        //               log("Mulai:::::::::::::::::::::::::2");
+        //               setState(
+        //                 () => _isInfoStepCompleted = true,
+        //               );
+        //               log("Mulai:::::::::::::::::::::::::3");
+        //             }
+        //             log("Mulai:::::::::::::::::::::::::4");
+        //             _startLiveFeed();
+        //             log("Mulai:::::::::::::::::::::::::5");
+        //             log("_isInfoStepCompletedAKhir $_isInfoStepCompleted");
+        //           },
+        //           child: const Text("Save"),
+        //         ),
+        //       ),
+
+        // : M7LivelynessInfoWidget(
+        //     onStartTap: () {
+        //       if (mounted) {
+        //         setState(
+        //           () => _isInfoStepCompleted = true,
+        //         );
+        //       }
+        //       _startLiveFeed();
+        //     },
+        //   ),
         Align(
           alignment: Alignment.topRight,
           child: Padding(

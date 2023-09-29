@@ -144,7 +144,7 @@ class _M7LivelynessInfoWidgetState extends State<M7LivelynessInfoWidget> {
                 ),
               ),
               child: Text(
-                M7StringConstants.button.start,
+                M7StringConstants.button.start + 'Now',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: Colors.white,
